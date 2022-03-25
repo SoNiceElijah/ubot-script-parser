@@ -65,7 +65,7 @@ class Box {
     containsError() {
         return this.errs.length !== 0;
     }
-    containsWars() {
+    containsWarns() {
         return this.warns.length !== 0;
     }
     containsMeta() {

@@ -37,7 +37,7 @@ Module contains Shift-reduce parser implementation. And Parser Combinators imple
 ```js
 const { LexNode, Lexer } = require('ub-script-parser/core/lexer');
 const { GrammarReduce } = require('ub-script-parser/core/grammar');
-const { ReaderFactory, defaultPreProc } = requrie('ub-script-parser/core/reader');
+const { ReaderFactory } = require('ub-script-parser/core/reader');
 
 const lexer = new Lexer("lexer name");
 lexer.add((stream) => {
@@ -48,6 +48,13 @@ lexer.add((stream) => {
     const to = stream.pos;
     return new LexNode("number", number, from, to); 
 });
+lexer.add((stream) => {
+    stream.trimSpaces();
+    const pos = stream.pos;
+    if(stream.check(1) !== '+') return false;
+    stream.seek(1);
+    return new LexNode("plus", "+", pos, stream.pos);
+});
 
 const math = new GrammarReduce("grammar name");
 math.with(lexer);
@@ -56,9 +63,10 @@ math.rule(([e]) => parseFloat(e), "LIT", "number");
 math.rule(([e]) => e, "EXP", "LIT");
 math.rule(([l,o,r]) => l + r, "EXP", "EXP", "plus", "LIT");
 
-const model = math.run(new ReaderFactory("2 + 3 + 5 + 10", defaultPreProc), {});
+const model = math.run(new ReaderFactory("2 + 3 + 5 + 10"), {});
 
-model.val // 20 
+model.valid() // true
+model.get() // 20 
 ```
 
 ## Licence
