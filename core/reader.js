@@ -106,6 +106,7 @@ function makeFlatten(lines) {
 
 class ReaderFactory {
     constructor(str, prepoc) {
+        if(!prepoc) prepoc = defaultPreProc;
         const { res, map } = prepoc(str);
         this.source = str;
         this.str = res;
