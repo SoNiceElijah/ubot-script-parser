@@ -1,0 +1,24 @@
+{
+  "name": "ub-script-parser",
+  "version": "0.5.1",
+  "description": "Ubot Script parser",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --exit --timeout 1000"
+  },
+  "keywords": [
+    "ubot",
+    "ubot-script",
+    "ubot-parser"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SoNiceElijah/ubot-script-parser.git"
+  },
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "mocha": "^9.1.3"
+  },
+  "author": "soniceelijah",
+  "license": "MIT"
+}
