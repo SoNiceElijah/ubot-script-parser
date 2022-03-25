@@ -1,15 +1,17 @@
 # Ubot script parser
 
+![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/soniceelijah/ubot-script-parser/Test/main)
+
 Parser for `UBotScript`. 
 
 ```
-$ npm i ub-script-parser
+$ npm i ubot-script-parser
 ```
 
 Module has no dependencies.
 
 ```js
-const { go, goFromFile } = require('ub-script-parser');
+const { go, goFromFile } = require('ubot-script-parser');
 
 const ubotScriptStr = `
 :fn fact n
