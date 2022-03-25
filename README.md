@@ -1,11 +1,12 @@
 # Ubot script parser
 
 ![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/soniceelijah/ubot-script-parser/Test/main)
+![npm](https://img.shields.io/npm/v/ub-script-parser)
 
 Parser for `UBotScript`. 
 
 ```
-$ npm i ubot-script-parser
+$ npm i ub-script-parser
 ```
 
 Module has no dependencies.
