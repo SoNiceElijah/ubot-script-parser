@@ -2,6 +2,8 @@ const ulexer = require('./ubot/lexer.ubot');
 const ugrammar = require('./ubot/grammar.ubot');
 const uverify = require('./ubot/verify.ubot');
 
+const { err } = require('./core/utils');
+
 const fs = require('fs');
 
 const { countSpaces, makeFlatten, ReaderFactory } = require('./core/reader');

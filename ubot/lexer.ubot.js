@@ -72,43 +72,45 @@ const escapemap = {
     't' : '\t',
     'r' : '\r',
     '"' : '"',
+    '\'' : '\'',
     '$' : '$',
     '\\' : '\\'
 }
-function isString(stream) {
-    const pos = stream.pos;
-    if(stream.check(1) !== '"') return false;
-    stream.seek(1);
-    let res = "";
-    const vars = [];
-    let e;
-    let escaped = false;
-    while(((e = stream.seek(1)) !== '"' || escaped) && !stream.eof()) {
-        if(escaped) {
-            res += escapemap[e] || e;
-            escaped = false;
-            continue;
-        }
-        if(e === '\\') {
-            escaped = true;
-            continue;
-        }
-        if(e === '$') {
-            const v = stream.match(/^_*[a-zA-Z]\w*/);
-            if(v) {
-                res += `$${v}`;
-                vars.push(v);
-            } else {
-                res += e;
+function quotedString(q) {
+    return function(stream) {
+        const pos = stream.pos;
+        if(stream.check(1) !== q) return false;
+        stream.seek(1);
+        let res = "";
+        const vars = [];
+        let e;
+        let escaped = false;
+        while(((e = stream.seek(1)) !== q || escaped) && !stream.eof()) {
+            if(escaped) {
+                res += escapemap[e] || e;
+                escaped = false;
+                continue;
             }
-            continue;
+            if(e === '\\') {
+                escaped = true;
+                continue;
+            }
+            if(e === '$') {
+                const v = stream.match(/^_*[a-zA-Z]\w*/);
+                if(v) {
+                    res += `$${v}`;
+                    vars.push(v);
+                } else {
+                    res += e;
+                }
+                continue;
+            }
+            res += e;
         }
-        res += e;
+        if(stream.eof()) return err("Unexpected end of string");
+        return new LexNode("string", { type : 'pattern', value : res, vars }, pos, stream.pos - 1);
     }
-    if(stream.eof()) return err("Unexpected end of string");
-    return new LexNode("string", { type : 'pattern', value : res, vars }, pos, stream.pos - 1);
 }
-
 function isOtherwise(stream) {
     const pos = stream.pos;
     const otherwise = stream.match(/^_+/);
@@ -134,7 +136,8 @@ ubot.add(isHeader);
 ubot.add(isOp);
 ubot.add(isBoolean);
 ubot.add(isWord);
-ubot.add(isString);
+ubot.add(quotedString("\""));
+ubot.add(quotedString("'"));
 ubot.add(isOtherwise);
 
 module.exports = ubot;

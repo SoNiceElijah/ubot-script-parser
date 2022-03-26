@@ -28,6 +28,7 @@ function makeFlatten(lines) {
     let map = [];
 
     let acc = 0;
+    let comment = false;
 
     const stack = [lvl];
     for(const line of lines) {
@@ -49,6 +50,23 @@ function makeFlatten(lines) {
             const len = trimmed.length;
             trimmed = trimmed.substring(0,idx);
             line.pad = line.pad + len - idx;
+        }
+
+        const midx = trimmed.indexOf('/*');
+        if(midx > 0) {
+            comment = true;
+            trimmed = trimmed.substring(0,midx);
+        }
+
+        const eidx = trimmed.indexOf('*/');
+        if(eidx > 0 && comment) {
+            trimmed = trimmed.substring(eidx);
+            comment = false;
+        }
+
+        if(comment) {
+            acc += line.line.length + 1;
+            continue;
         }
 
         // console.log(line.shift + trimmed.length + line.pad, line.line.length);
