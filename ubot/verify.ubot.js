@@ -143,6 +143,25 @@ ubot.check('match_block', function (node) {
     return false;
 });
 
+ubot.check('lambda', function (node) {
+    
+    const msgs = [];
+    for(const a of node.decl.args) {
+        if(a.type !== 'varible') {
+            msgs.push({ node : a, err : `Unsupported lambda argument declaration [${a.type}]`});
+        }
+    }
+
+    for(const s of node.body) {
+        this.next(s);
+    }
+
+    if(msgs.length) {
+        return msgs;
+    }
+    return false;
+});
+
 ubot.check('case', function (node) {
     this.next(node.value);
     for(const a of node.actions) {

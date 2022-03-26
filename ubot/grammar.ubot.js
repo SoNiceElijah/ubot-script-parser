@@ -142,6 +142,25 @@ function rlstmap([d, _d, r]) {
 
     return d;
 }
+function lammap([c,_gh,s]) {
+    return lammbigap([c, _gh, [s]]);
+}
+function lammbigap([c,_gh,s]) {
+    const args = [];
+    if(c.type === 'call') {
+        args.push(c.caller);
+        for(const a of c.args) {
+            args.push(a);
+        }
+    } else {
+        args.push(c);
+    }
+    return {
+        type : 'lambda',
+        decl : { args },
+        body : s
+    }
+}
 
 //////////////////////////////////////////////
 ///                 Grammar                ///
@@ -167,6 +186,7 @@ ubot.rule(statearr, "statements", "statements", "sc", "statement");
 ubot.rule(id, "val", "number");
 ubot.rule(permap, "val", "lp","exp", "rp");
 
+ubot.rule(permap, "call_in", "lp", "exp", "rp");
 ubot.rule(id, "call_in", "word");
 ubot.rule(id, "call", "call_in");
 
@@ -209,10 +229,12 @@ ubot.rule(id, "exp", "or");
 ubot.rule(assmap, "ass", "word", "la", "string");
 ubot.rule(assmap, "ass", "word", "la", "exp");
 ubot.rule(assmap, "ass", "word", "la", "match_block");
+ubot.rule(assmap, "ass", "word", "la", "lambda");
 
 ubot.rule(id, "statement", "exp");
 ubot.rule(id, "statement", "ass");
 ubot.rule(id, "statement", "match_block");
+ubot.rule(id, "statement", "lambda");
 
 ubot.rule(id, "else", "otherwise");
 ubot.rule(id, "string_case", "string");
@@ -240,5 +262,8 @@ ubot.rule(rinitmap, 'data_records', 'data_record');
 ubot.rule(rlstmap, 'data_records', 'data_records', 'sc', 'data_record');
 
 ubot.rule(blockmap, 'data_record_block', 'lb', 'data_records', 'rb');
+
+ubot.rule(lammap, "lambda", "call", "gh", "statement");
+ubot.rule(lammbigap, "lambda", "call", "gh", "block_inner");
 
 module.exports = ubot;

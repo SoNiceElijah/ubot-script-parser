@@ -238,7 +238,7 @@ class GrammarReduce {
         while(reduceonce(stack, dict));
 
         if(stack.length > 1) {
-            return box.errors({ node : stack[stack.length - 1], err : "Parse error!" })
+            return box.errors({ node : stack[stack.length - 1].val , err : "Parse error!" })
         }
         return box.put(stack[0].val);
     }

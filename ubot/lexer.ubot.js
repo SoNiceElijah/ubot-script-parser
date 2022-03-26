@@ -24,7 +24,8 @@ const spec = {
     ';' : new LexNode('sc', ';'),
     '{' : new LexNode('lb', '{'),
     '}' : new LexNode('rb', '}'),
-    ':' : new LexNode('dd', ':')
+    ':' : new LexNode('dd', ':'),
+    '=>' : new LexNode('gh', ':')
 }
 
 function isOp(stream) {
