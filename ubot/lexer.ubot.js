@@ -34,13 +34,13 @@ function isOp(stream) {
     if(twoSymb) {
         twoSymb.from = stream.pos;
         stream.seek(2);
-        twoSymb.to = stream.pos;
+        twoSymb.to = stream.pos - 1;
         return twoSymb;
     } 
     if(oneSymb) {
         oneSymb.from = stream.pos;
         stream.seek(1);
-        oneSymb.to = stream.pos;
+        oneSymb.to = stream.pos - 1;
         return oneSymb;
     }
     return false;
@@ -50,21 +50,21 @@ function isWord(stream) {
     const pos = stream.pos;
     const word = stream.match(/^_*[a-zA-Z]\w*/);
     if(!word) return false;
-    return new LexNode("word", { type : 'varible' , value : word }, pos, stream.pos);
+    return new LexNode("word", { type : 'varible' , value : word }, pos, stream.pos - 1);
 }
 
 function isNumber(stream) {
     const pos = stream.pos;
     const number = stream.match(/^-?[0-9]+\.?[0-9]*/);
     if(!number) return false;
-    return new LexNode("number", { type : 'literal', value : parseFloat(number)}, pos, stream.pos);
+    return new LexNode("number", { type : 'literal', value : parseFloat(number)}, pos, stream.pos - 1);
 }
 
 function isHeader(stream) {
     const pos = stream.pos;
     const header = stream.match(/^:\w+/);
     if(!header) return false;
-    return new LexNode("header", { type : 'header', value  : header }, pos, stream.pos);
+    return new LexNode("header", { type : 'header', value  : header }, pos, stream.pos - 1);
 }
 
 const escapemap = {
@@ -106,21 +106,21 @@ function isString(stream) {
         res += e;
     }
     if(stream.eof()) return err("Unexpected end of string");
-    return new LexNode("string", { type : 'pattern', value : res, vars }, pos, stream.pos);
+    return new LexNode("string", { type : 'pattern', value : res, vars }, pos, stream.pos - 1);
 }
 
 function isOtherwise(stream) {
     const pos = stream.pos;
     const otherwise = stream.match(/^_+/);
     if(!otherwise) return false;
-    return new LexNode("otherwise", { type : 'otherwise', value : otherwise}, pos, stream.pos);
+    return new LexNode("otherwise", { type : 'otherwise', value : otherwise}, pos, stream.pos - 1);
 }
 
 function isBoolean(stream) {
     const pos = stream.pos;
     const boolean = stream.match(/^(true|false)/);
     if(!boolean) return false;
-    return new LexNode("boolean", { type : 'boolean', value : boolean === 'true' }, pos, stream.pos);
+    return new LexNode("boolean", { type : 'boolean', value : boolean === 'true' }, pos, stream.pos - 1);
 }
 
 //////////////////////////////////////////////
