@@ -73,13 +73,40 @@ ubot.check('block', function (node) {
 
 });
 
+const decl_headers = [
+    ":use",
+    ":import"
+];
 ubot.check('block_decl', function (node) {
-    if(node.header.value !== ':use') {
+    if(!decl_headers.includes(node.header.value)) {
         return { node : node.header, err : `Unknown import header ${node.header.value}` }
     }
 
-    if(node.decl.vars.length) {
-        return { node : node.decl, err : `No pattern string allowed` }
+    if(node.header.value === ':use') {
+        if(node.decl.vars.length) {
+            return { node : node.decl, err : `No pattern string allowed` }
+        }
+    } else {
+        function check(n) {
+            if(n.type === 'varible') return false;
+            if(n.type === 'otherwise') return false;
+            if(n.type === 'call') {            
+                if(n.caller.type !== 'varible') {
+                    return { node : n.caller, err : `Only type, varible or otherwise allowed` }
+                }
+                let res = false;
+                for(const a of n.args) {
+                    res = res || check(a);
+                }
+                return res;
+            }
+
+            return { node : n, err : `Only type, varible or otherwise allowed` };
+        }
+        if(node.decl.from.vars.length) {
+            return { node : node.decl.from, err : `No pattern string allowed` }
+        }
+        return check(node.decl.to);
     }
 
     return false;

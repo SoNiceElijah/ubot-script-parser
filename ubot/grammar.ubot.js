@@ -161,6 +161,9 @@ function lammbigap([c,_gh,s]) {
         body : s
     }
 }
+function immap([h, c, _cl, s]) {
+    return [h, { type : 'import', to : c, from : s }];
+}
 
 //////////////////////////////////////////////
 ///                 Grammar                ///
@@ -176,6 +179,7 @@ ubot.rule(bigmap, 'big_block', 'header', 'call', 'block_inner_wrapper', 'sc');
 ubot.rule(typemap, 'big_block', 'header', 'call', 'data_record_block', 'sc');
 
 ubot.rule(id2, 'big_block_left', 'header', 'string');
+ubot.rule(immap, 'big_block_left', 'header', 'call', 'cl', 'string');
 ubot.rule(bigdeclmap, 'big_block', 'big_block_left', 'sc');
 
 ubot.rule(blockmap, "block_inner", "lb", "statements", "rb");
