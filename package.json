@@ -1,6 +1,6 @@
 {
   "name": "ub-script-parser",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "description": "Ubot Script parser",
   "main": "index.js",
   "scripts": {
