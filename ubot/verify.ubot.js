@@ -1,6 +1,36 @@
 const { Verifier } = require('../core/verifier');
 
 //////////////////////////////////////////////
+///                 Functions              ///
+//////////////////////////////////////////////
+
+function isTypeVarOtherwise(n) {
+    if(n.type === 'varible') return false;
+    if(n.type === 'otherwise') return false;
+    if(n.type === 'call') {   
+        let res = [];
+        if(n.caller.type !== 'varible') {
+            res.push({ node : n.caller, err : `Only type, varible or otherwise allowed` });
+        }
+        for(const a of n.args) {
+            const b = isTypeVarOtherwise(a);
+            if(b) {
+                if(Array.isArray(b)) {
+                    for(const e of b) {
+                        res.push(e);
+                    }
+                } else {
+                    res.push(b);
+                }
+            }
+        }
+        return res.length ? res : false;
+    }
+
+    return { node : n, err : `Only type, varible or otherwise allowed` };
+}
+
+//////////////////////////////////////////////
 ///                 Verifier               ///
 ////////////////////////////////////////////// 
 
@@ -40,9 +70,19 @@ ubot.check('block', function (node) {
     }
     if(hval !== ':decl') {
         node.decl.name.lex_token.actual_type = "decl_fn_name";
+        if(node.decl.name.type !== 'varible') {
+            msgs.push({ node : node.decl.name, err : "Unsuported function name" });
+        }
         for(const arg of node.decl.args) {
-            if(arg.type !== 'varible' && arg.type !== 'otherwise') {
-                msgs.push({node : arg, err : `Unsupported function argument declaration [${arg.type}]` });
+            const argsres = isTypeVarOtherwise(arg);
+            if(argsres) {
+                if(Array.isArray(argsres)) {
+                    for(const e of argsres) {
+                        msgs.push(e);
+                    }
+                } else {
+                    msgs.push(argsres);
+                }
             }
             arg.lex_token.actual_type = "decl_fn_argument";
         }
@@ -87,45 +127,25 @@ ubot.check('block_decl', function (node) {
             return { node : node.decl, err : `No pattern string allowed` }
         }
     } else {
-        function check(n) {
-            if(n.type === 'varible') return false;
-            if(n.type === 'otherwise') return false;
-            if(n.type === 'call') {            
-                if(n.caller.type !== 'varible') {
-                    return { node : n.caller, err : `Only type, varible or otherwise allowed` }
-                }
-                let res = false;
-                for(const a of n.args) {
-                    res = res || check(a);
-                }
-                return res;
-            }
-
-            return { node : n, err : `Only type, varible or otherwise allowed` };
-        }
         if(node.decl.from.vars.length) {
             return { node : node.decl.from, err : `No pattern string allowed` }
         }
-        return check(node.decl.to);
+        return isTypeVarOtherwise(node.decl.to);
     }
 
     return false;
 });
 
 ubot.check('assignment', function (node) {
-    if(node.left.type !== 'varible') {
-        return { node : node.left, err : `Assignment to somthing wierd...` }
+
+    if(node.left.type === 'otherwise') {
+        return { node : node.left, err : "Wierd left assignment" };
     }
-
-    this.next(this.right);    
-    return false;
-});
-
-ubot.check('assignment', function (node) {
-    if(node.left.type !== 'varible') {
-        return { node : node.left, err : `Assignment to somthing wierd...` }
+    const res = isTypeVarOtherwise(node.left);
+    if(res) {
+        return res;
     }
-
+    
     this.next(node.right);    
     return false;
 });
@@ -173,9 +193,16 @@ ubot.check('match_block', function (node) {
 ubot.check('lambda', function (node) {
     
     const msgs = [];
-    for(const a of node.decl.args) {
-        if(a.type !== 'varible') {
-            msgs.push({ node : a, err : `Unsupported lambda argument declaration [${a.type}]`});
+    for(const arg of node.decl.args) {
+        const argsres = isTypeVarOtherwise(arg);
+        if(argsres) {
+            if(Array.isArray(argsres)) {
+                for(const e of argsres) {
+                    msgs.push(e);
+                }
+            } else {
+                msgs.push(argsres);
+            }
         }
     }
 

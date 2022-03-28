@@ -9,6 +9,8 @@ describe("New feature test", () => {
         const model = goFromFile(path.resolve(__dirname, 'test.ubot'), {});
         // model.printDebug();
 
+        console.log(model.valid());
+        console.log(model.iterateErrs(e => console.log(e)))
         assert.isTrue(model.valid());
         assert.isFalse(model.containsWarns());
 

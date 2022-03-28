@@ -2,5 +2,13 @@
 :use "math"
 :import Express (App _ y) _ :: "express"
 
+:decl Box v
+    type : 'box'
+    value : v
+
+:fn test a b
+    a
+
 :main main args
     print "sffsfsdf"
+    Box v <- (Box x) (Box y) => Box (x + y)

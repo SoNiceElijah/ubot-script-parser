@@ -230,10 +230,10 @@ ubot.rule(id, "or", "and");
 ubot.rule(binmap, "or", "or", "op_1", "and");
 
 ubot.rule(id, "exp", "or");
-ubot.rule(assmap, "ass", "word", "la", "string");
-ubot.rule(assmap, "ass", "word", "la", "exp");
-ubot.rule(assmap, "ass", "word", "la", "match_block");
-ubot.rule(assmap, "ass", "word", "la", "lambda");
+ubot.rule(assmap, "ass", "call", "la", "string");
+ubot.rule(assmap, "ass", "call", "la", "exp");
+ubot.rule(assmap, "ass", "call", "la", "match_block");
+ubot.rule(assmap, "ass", "call", "la", "lambda");
 
 ubot.rule(id, "statement", "exp");
 ubot.rule(id, "statement", "ass");
