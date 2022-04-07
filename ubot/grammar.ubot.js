@@ -29,6 +29,12 @@ function callppmap([c, _s, v, __s]) {
     c.args.push(v);
     return c;
 }
+function calllines([c, _ww, v]) {
+    for(const s of v) {
+        c.args.push(s);
+    }
+    return c;
+}
 function callinitmap([c, v]) {
     return {
         type : 'call',
@@ -41,6 +47,13 @@ function callinitppmap([c, _s, v, __s]) {
         type : 'call',
         caller : c,
         args: [v]
+    }
+}
+function callinitlines([c, _ww, v]) {
+    return {
+        type : 'call',
+        caller : c,
+        args: v
     }
 }
 function permap([_p, s, __p]) {
@@ -70,8 +83,11 @@ function caseblockmap([pa, _r , s]) {
         actions : s
     }
 }
-function kamp([s, e]) {
+function kmap([s, e]) {
     return s;
+}
+function ksmap([s, e]) {
+    return e;
 }
 function matchmap([d, _b, s, __b]) {
     if(d.type !== 'call') return { type : 'unknown' };
@@ -200,6 +216,7 @@ ubot.rule(callinitmap, "call", "call_in", "word");
 ubot.rule(callinitmap, "call", "call_in", "string");
 ubot.rule(callinitmap, "call", "call_in", "boolean");
 ubot.rule(callinitmap, "call", "call_in", "otherwise");
+ubot.rule(callinitlines, "call", "call_in", "ww", "block_inner");
 
 ubot.rule(callmap, "call", "call", "number");
 ubot.rule(callppmap, "call", "call", "lp","exp", "rp");
@@ -207,6 +224,7 @@ ubot.rule(callmap, "call", "call", "word");
 ubot.rule(callmap, "call", "call", "string");
 ubot.rule(callmap, "call", "call", "boolean");
 ubot.rule(callmap, "call", "call", "otherwise");
+ubot.rule(calllines, "call", "call", "ww", "block_inner");
 
 ubot.rule(id, "product", "val");
 ubot.rule(id, "product", "call");
@@ -230,12 +248,11 @@ ubot.rule(id, "or", "and");
 ubot.rule(binmap, "or", "or", "op_1", "and");
 
 ubot.rule(id, "exp", "or");
+ubot.rule(id, "lambda", "exp");
 ubot.rule(assmap, "ass", "call", "la", "string");
-ubot.rule(assmap, "ass", "call", "la", "exp");
 ubot.rule(assmap, "ass", "call", "la", "match_block");
 ubot.rule(assmap, "ass", "call", "la", "lambda");
 
-ubot.rule(id, "statement", "exp");
 ubot.rule(id, "statement", "ass");
 ubot.rule(id, "statement", "match_block");
 ubot.rule(id, "statement", "lambda");
@@ -261,6 +278,11 @@ ubot.rule(recmap, 'data_record', 'word', 'dd', 'boolean');
 ubot.rule(recmap, 'data_record', 'word', 'dd', 'number');
 ubot.rule(recmap, 'data_record', 'word', 'dd', 'string');
 ubot.rule(recmap, 'data_record', 'word', 'dd', 'data_record_block');
+ubot.rule(recmap, 'data_record', 'string', 'dd', 'word');
+ubot.rule(recmap, 'data_record', 'string', 'dd', 'boolean');
+ubot.rule(recmap, 'data_record', 'string', 'dd', 'number');
+ubot.rule(recmap, 'data_record', 'string', 'dd', 'string');
+ubot.rule(recmap, 'data_record', 'string', 'dd', 'data_record_block');
 
 ubot.rule(rinitmap, 'data_records', 'data_record');
 ubot.rule(rlstmap, 'data_records', 'data_records', 'sc', 'data_record');

@@ -10,7 +10,7 @@ describe("New feature test", () => {
         // model.printDebug();
 
         console.log(model.valid());
-        console.log(model.iterateErrs(e => console.log(e)))
+        console.log(model.iterateErrs(e => console.log(e)));
         assert.isTrue(model.valid());
         assert.isFalse(model.containsWarns());
 
